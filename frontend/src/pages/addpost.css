@@ -1,0 +1,143 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #84abe8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.post-creator {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    width: 600px;
+}
+
+.post-header {
+    padding: 16px;
+    border-bottom: 1px solid #efefef;
+}
+
+.post-header h1 {
+    font-size: 18px;
+    color: #262626;
+}
+
+.post-content {
+    padding: 20px;
+}
+
+.upload-area {
+    border: 2px dashed #dbdbdb;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upload-area:hover {
+    background-color: #fafafa;
+}
+
+.upload-icon {
+    font-size: 40px;
+    color: #8e8e8e;
+    margin-bottom: 10px;
+}
+
+.upload-text {
+    color: #8e8e8e;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.upload-button {
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upload-button:hover {
+    background-color: #0081d6;
+}
+
+.caption-area {
+    margin-top: 20px;
+}
+
+.caption-label {
+    display: block;
+    font-size: 14px;
+    color: #262626;
+    margin-bottom: 8px;
+}
+
+.caption-input {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px;
+    resize: vertical;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.caption-input:focus {
+    outline: none;
+    border-color: #8e8e8e;
+}
+
+.post-footer {
+    padding: 16px;
+    border-top: 1px solid #efefef;
+}
+
+.share-button {
+    width: 100%;
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.share-button:hover {
+    background-color: #0081d6;
+}
+
+.share-button:disabled {
+    background-color: #b2dffc;
+    cursor: not-allowed;
+}
+
+@media (max-width: 500px) {
+    .post-creator {
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .upload-area {
+        padding: 20px;
+    }
+}
