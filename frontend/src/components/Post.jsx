@@ -2,6 +2,8 @@ import React from 'react'
 import { useAuthContext } from '../context/authContext'
 import { MoreHorizontal } from 'lucide-react'
 import LikeDislike from './LikeDislike'
+import { extractTime } from '../utils/extractTime'
+import { Link } from 'react-router-dom'
 
 
 const Post = (props) => {
@@ -14,8 +16,8 @@ const Post = (props) => {
       <div className="post-author">
         <img src={`/api/placeholder/40/40`} alt="User avatar" className="avatar" />
         <div>
-          <h3>{props.username}</h3>
-          <span>2 hours ago</span>
+          <Link style={{textDecoration:'none'}} to={`/profile/${props.username}`}><h3 style={{textDecoration:'none'}}>{props.username}</h3></Link>
+          <span>{extractTime(props.post.createdAt)}</span>
         </div>
       </div>
       <button className="more-btn">
@@ -27,7 +29,7 @@ const Post = (props) => {
     </p>
     <img src={`/api/placeholder/600/400`} alt="Post" className="post-image" />
     <div className="post-actions">
-      <button>❤️ {props.post.postLikes.length}</button>
+    <LikeDislike likes={props.post.postLikes.length}/>
       <button>💬 {props.post.postComments.length}</button>
       <button>🔄 ?</button>    
     </div>

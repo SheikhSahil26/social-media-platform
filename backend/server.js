@@ -9,7 +9,7 @@ const path=require('path');
 const connectToMongoDB=require("./db/connectToMongoDB");
 
 const app=express();
-const PORT=1000;
+const PORT=2000;
 
 const cors=require("cors");
 

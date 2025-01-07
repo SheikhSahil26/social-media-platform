@@ -6,15 +6,18 @@ import { Bell, MessageCircle, Search, Home, Bookmark, Users, Settings, TrendingU
 import { useAuthContext } from '../context/authContext';
 import toast from 'react-hot-toast';
 import Post from '../components/Post';
+import DropDown from '../components/DropDown';
 
 
 const HomePage = () => {
 
   const {authUser}=useAuthContext()
 
-  const [posts,setPosts]=useState([])
+  console.log(authUser)
 
-  const [users,setUsers]=useState([]);
+  const [dropDown,setDropDown]=useState(false)
+
+  const [posts,setPosts]=useState([])
 
   useEffect(()=>{
 
@@ -29,8 +32,6 @@ const HomePage = () => {
             if(data.error)throw new Error(data.error)
 
             setPosts(data.posts || []);
-
-            setUsers(data.users || []);
 
 
         }catch(error){
@@ -76,8 +77,9 @@ const HomePage = () => {
             <span>Settings</span>
           </a>
         </div>
-
-        <button className="create-post-btn">Create Post</button>
+        <Link to={"/addpost"}>
+          <button className="create-post-btn">Create Post</button>
+        </Link>
       </nav>
 
       {/* Main Content */}
@@ -90,7 +92,7 @@ const HomePage = () => {
           <div className="header-actions">
             <button className="icon-btn">
               <Bell size={20} />
-              <span className="notification-badge">3</span>
+              <span className="notification-badge">0</span>
             </button>
             <div className="user-menu">
               <Link to={`/profile/${authUser.username}`} style={{textDecoration:'none'}}>
@@ -123,8 +125,8 @@ const HomePage = () => {
             </div>
 
             {Array.isArray(posts) && posts.length > 0 ? (
-                            posts.map((post,users) => (
-                                <Post key={post._id} post={post} username={users.username} />
+                            posts.map((post) => (
+                                <Post key={post._id} post={post} username={post.postedBy.username} />
                             ))
                         ) : (
                             <h1>No posts to show</h1>

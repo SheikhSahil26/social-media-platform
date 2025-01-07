@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
 import { useAuthContext } from '../context/authContext'
 import toast from 'react-hot-toast';
+import { useProfileContext } from '../context/profileContext';
 
 const useGetProfile = (username) => {
   
     const {authUser,setAuthUser,loading,setLoading} = useAuthContext();
+    const {profileUser,setProfileUser}=useProfileContext();
 
         const fetchUserProfile=async()=>{
             try{
@@ -22,8 +24,12 @@ const useGetProfile = (username) => {
                     const data= await res.json();
 
                     if(data.error) throw new Error(data.error);
-        
-                    setAuthUser(data);
+
+                    console.log(data)
+
+                    
+                    setProfileUser(data);
+                    
 
                 }
             }

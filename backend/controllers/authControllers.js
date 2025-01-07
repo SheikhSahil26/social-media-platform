@@ -31,6 +31,8 @@ async function userSignUp(req,res){
 
             console.log("new user created");
 
+            generateTokenAndSetCookie(newUser._id,res)
+
             return res.status(200).json({
                 _id: newUser._id,
                 username: newUser.username,

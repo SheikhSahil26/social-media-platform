@@ -1,16 +1,23 @@
 import React from 'react'
 import { Heart } from 'lucide-react'
+import { useState,useEffect } from 'react'
 
-const LikeDislike = () => {
+const LikeDislike = (props) => {
+
+  console.log(props.likes)
 
   const [liked,setLiked]=useState(false)
+  const [isLiked,setIsLiked]=useState(false)
+  const [isAnimating,setIsAnimating]=useState(false);
 
-    
-
-
-    const handleLikeClick=async(e)=>{
-        
-    }
+  const handleLikeClick=async(e)=>{
+      e.preventDefault();
+      console.log("clicked on heart")
+      setLiked(!liked);
+      setIsLiked(!isLiked)
+      setIsAnimating(!isAnimating)
+     
+  }
 
 
 
@@ -48,7 +55,7 @@ const LikeDislike = () => {
         duration-300
         ${isLiked ? 'text-rose-500' : 'text-gray-500'}
       `}>
-        {likeCount}
+        {props.likes}
       </span>
     </div>
     </div>

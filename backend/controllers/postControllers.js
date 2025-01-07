@@ -8,22 +8,12 @@ async function getAllPosts(req,res){
 
     try{
 
-        const Posts=await Post.find({});
-
-        let users=[]
-
-        Posts.forEach(async (post) => {
-            const user=await User.find({_id:post.postedBy})
-            
-            users.push(user);
-            
-        });
+        const Posts=await Post.find().populate('postedBy','username profilePicUrl').sort({createdAt:-1});   
 
         console.log(Posts);
 
         return res.status(200).json({
             posts:Posts,
-            users:users,
         })
 
     }catch(error){

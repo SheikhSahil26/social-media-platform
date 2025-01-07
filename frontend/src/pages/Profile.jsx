@@ -8,30 +8,39 @@ import Post from '../components/Post'
 import useGetProfile from '../hooks/useGetProfile'
 import { useLocation, useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { useProfileContext } from '../context/profileContext'
+
 
 const Profile = () => {
 
     const location = useLocation()
 
-    const { username } = useParams()
+    const [userData, setUserData] = useState({});
 
-    console.log(username)
+    const { username } = useParams()
 
     const { fetchUserProfile } = useGetProfile(username);
 
+
+
     useEffect(() => {
-        fetchUserProfile();
+        fetchUserProfile()
     }, [username]);
+
+
 
     const { authUser, loading } = useAuthContext();
 
+    const {profileUser}=useProfileContext();
+
     // console.log(authUser)
 
-    console.log(username)
+    console.log(authUser.username)
+    console.log(profileUser.username)
 
     const { posts } = useGetPost(username);
 
-    console.log(username)
+
 
     const navigate = useNavigate()
 
@@ -53,32 +62,35 @@ const Profile = () => {
                     {/* <!-- Profile Info Section --> */}
                     <div className="profile-info">
                         <div className="profile-photo">
-                            <img src={authUser.profilePicUrl} alt="Profile Photo" />
+                            <img src={profileUser.profilePicUrl} alt="Profile Photo" />
                         </div>
 
                         <div className="profile-header">
-                            <h1>{authUser.username}</h1>
-                            <p className="role">{authUser.bio}</p>
-                            <Link to={'/editprofile'}>
-                                <button>Edit Profile</button>
-                            </Link>
+                            <h1>{profileUser.username}</h1>
+                            <p className="role">{profileUser.bio}</p>
+                            {
+                                authUser.username === profileUser.username ?
+                                    (<Link to={'/editprofile'}>
+                                        <button>Edit Profile</button>
+                                        <button style={{ margin: 20 }}>Add post</button>
+                                    </Link>) : (<button>Follow</button>)}
                             <Link to={'/addpost'}>
-                                <button style={{margin:20}}>Add post</button>
+                               
                             </Link>
                         </div>
 
                         {/* <!-- Stats Section --> */}
                         <div className="stats-section">
                             <div className="stat-item">
-                                <span className="stat-number">{authUser.totalPosts}</span>
+                                <span className="stat-number">{profileUser.totalPosts}</span>
                                 <span className="stat-label">Posts</span>
                             </div>
                             <div className="stat-item">
-                                <span className="stat-number">{authUser.followers.length}</span>
+                                <span className="stat-number">{profileUser.followers.length}</span>
                                 <span className="stat-label">Followers</span>
                             </div>
                             <div className="stat-item">
-                                <span className="stat-number">{authUser.followings.length}</span>
+                                <span className="stat-number">{profileUser.followings.length}</span>
                                 <span className="stat-label">Following</span>
                             </div>
                         </div>
