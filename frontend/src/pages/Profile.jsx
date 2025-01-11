@@ -21,6 +21,27 @@ const Profile = () => {
 
     const { fetchUserProfile } = useGetProfile(username);
 
+    let data = {}
+
+    const handleFollow = async (e) => {
+        e.preventDefault();
+        const res = await fetch(`/api/user/followuser/${profileUser.username}`, {
+            method: "POST",
+        })
+        console.log(res)
+
+        data = await res.json()
+
+        console.log(data)
+
+    }
+
+    
+    const { authUser, loading } = useAuthContext();
+
+    const { profileUser, setProfileUser } = useProfileContext();
+
+
 
 
     useEffect(() => {
@@ -29,17 +50,18 @@ const Profile = () => {
 
 
 
-    const { authUser, loading } = useAuthContext();
 
-    const {profileUser}=useProfileContext();
+
+    
+
+
 
     // console.log(authUser)
 
-    console.log(authUser.username)
-    console.log(profileUser.username)
+
 
     const { posts } = useGetPost(username);
-
+   
 
 
     const navigate = useNavigate()
@@ -47,6 +69,9 @@ const Profile = () => {
     if (loading) {
         return <h3>loading....</h3>
     }
+
+
+
 
 
 
@@ -72,11 +97,13 @@ const Profile = () => {
                                 authUser.username === profileUser.username ?
                                     (<Link to={'/editprofile'}>
                                         <button>Edit Profile</button>
-                                        <button style={{ margin: 20 }}>Add post</button>
-                                    </Link>) : (<button>Follow</button>)}
-                            <Link to={'/addpost'}>
-                               
-                            </Link>
+                                        <Link to={'/addpost'}><button>Add Post</button></Link>
+                                    </Link>) : ((profileUser.followers.length>0) && (profileUser.followers.some(id=>id.toString()===authUser._id.toString()))?<button onClick={handleFollow}>Unfollow</button>:
+                                    <button onClick={handleFollow}>follow</button>)
+
+                                    
+                                    }
+
                         </div>
 
                         {/* <!-- Stats Section --> */}

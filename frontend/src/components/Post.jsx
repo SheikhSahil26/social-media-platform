@@ -10,6 +10,8 @@ const Post = (props) => {
 
     const {authUser}=useAuthContext()
 
+
+
   return (
     <div className="post-card">
     <div className="post-header">
@@ -29,7 +31,7 @@ const Post = (props) => {
     </p>
     <img src={`/api/placeholder/600/400`} alt="Post" className="post-image" />
     <div className="post-actions">
-    <LikeDislike likes={props.post.postLikes.length}/>
+    <LikeDislike postId={props.post._id} post={props.post}/>
       <button>💬 {props.post.postComments.length}</button>
       <button>🔄 ?</button>    
     </div>

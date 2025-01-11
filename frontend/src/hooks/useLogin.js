@@ -1,9 +1,11 @@
 import React from 'react'
 import toast from 'react-hot-toast'
 import { useAuthContext } from '../context/authContext.jsx'
+import { useProfileContext } from '../context/profileContext.jsx';
 
 const useLogin = () => {
   const {setAuthUser}=useAuthContext();
+  const {setProfileUser}=useProfileContext()
 
   const login=async({username,password})=>{
 
@@ -25,6 +27,8 @@ const useLogin = () => {
         localStorage.setItem('user',JSON.stringify(data))
 
         setAuthUser(data);
+        setProfileUser(data);
+
     }catch(error){
         console.log(error)
         toast.error(error.message)

@@ -15,6 +15,7 @@ async function seeProfile(req, res) {
     }
 
     return res.status(200).json({
+        _id:findUser._id,
         username: findUser.username,
         profilePicUrl: findUser.profilePicUrl,
         followers: findUser.followers,
@@ -40,7 +41,7 @@ async function followUnFollowUser(req,res){
 
         console.log(currentUser.followings)
 
-        console.log(req.params.username);
+       
     
         const found=currentUser.followings.find(id=>id.toString()===userToFollow._id.toString())
 
@@ -54,6 +55,8 @@ async function followUnFollowUser(req,res){
 
            await  userToFollow.save();
             await currentUser.save();
+
+            console.log(currentUser.followings);
     
             return res.status(200).json({
                 liked:"followed",

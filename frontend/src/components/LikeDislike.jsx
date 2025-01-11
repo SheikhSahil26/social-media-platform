@@ -4,20 +4,41 @@ import { useState,useEffect } from 'react'
 
 const LikeDislike = (props) => {
 
-  console.log(props.likes)
 
-  const [liked,setLiked]=useState(false)
+  const [likeCount,setLikeCount]=useState(props.post.postLikes.length)
   const [isLiked,setIsLiked]=useState(false)
   const [isAnimating,setIsAnimating]=useState(false);
 
   const handleLikeClick=async(e)=>{
       e.preventDefault();
-      console.log("clicked on heart")
-      setLiked(!liked);
-      setIsLiked(!isLiked)
-      setIsAnimating(!isAnimating)
+      setIsLiked((prev)=>!prev)
+      setIsAnimating(true)
      
   }
+
+  console.log(isAnimating)
+  console.log(isLiked)
+
+  useEffect(() => {
+    if (isAnimating) {
+      const timer = setTimeout(() => setIsAnimating(false), 300); // Reset animation after 300ms
+      return () => clearTimeout(timer); // Cleanup timeout
+    }
+  }, [isAnimating]);
+
+  useEffect(()=>{
+    
+    const fetchLike=async ()=>{
+      const res=await fetch(`/api/post/like/${props.postId}`,{
+        method:"POST",
+      })
+      const data=await res.json();
+      console.log(data)
+    }
+
+    fetchLike()
+
+  },[isLiked])
 
 
 
@@ -55,7 +76,7 @@ const LikeDislike = (props) => {
         duration-300
         ${isLiked ? 'text-rose-500' : 'text-gray-500'}
       `}>
-        {props.likes}
+        {likeCount}
       </span>
     </div>
     </div>

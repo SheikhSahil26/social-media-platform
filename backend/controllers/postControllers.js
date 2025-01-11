@@ -199,6 +199,7 @@ async function likeDislikePost(req,res){
 
             return res.status(200).json({
                 liked:"liked",
+                likesNum:post.postLikes.length
             })
         }
         
@@ -207,7 +208,8 @@ async function likeDislikePost(req,res){
         await post.save();
 
         return res.status(200).json({
-            error:"unliked", 
+            error:"unliked",
+            likesNum:post.postLikes.length 
         })
     }
     catch(error){
