@@ -4,7 +4,7 @@ import useLogin from '../hooks/useLogin'
 
 const Login = () => {
 
-  const {login}=useLogin()
+  const {login}=useLogin()//hook function custom
 
   const [inputs,setInputs]=useState({
     username:"",
@@ -55,7 +55,7 @@ const Login = () => {
                 type="text" 
                 placeholder="username"
                 value={inputs.username}
-                onChange={(e)=>setInputs({...inputs,username:e.target.value})}
+                onChange={(e)=>setInputs({...inputs,username:e.target.value})}//this is used to create dynamic input field like jo bhi hum likhenge vo onthe spot input mai jayega .....
               />
             </div>
 

@@ -37,4 +37,5 @@ router.post("/reportpost/:id",protectedRoutes,reportPost);
 
 router.get("/getposts/:username",protectedRoutes,getUserPosts)
 
+
 module.exports=router;

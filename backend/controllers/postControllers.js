@@ -3,13 +3,13 @@ const User=require("../models/userModel")
 const Comment=require("../models/commentModel")
 const { findByIdAndUpdate, findById } = require("../models/userModel");
 
-
+//this is for showing all post in the homepage of the platform
 async function getAllPosts(req,res){
 
     try{
-
-        const Posts=await Post.find().populate('postedBy','username profilePicUrl').sort({createdAt:-1});   
-
+//fetching post after sorting them in descending order of their created time so we get the latest post first
+        const Posts=await Post.find().populate('postedBy','username profilePicUrl').sort({createdAt:-1}); 
+        //postedBy is a refrence to another object model so from that we want only the username and profilepic of user thats y populate.....
         console.log(Posts);
 
         return res.status(200).json({
@@ -24,6 +24,7 @@ async function getAllPosts(req,res){
     }
 }
 
+//to add post
 async function addPost(req,res){
     try{
         const {postCaption}=req.body;
@@ -72,7 +73,7 @@ async function addPost(req,res){
     }
 }
 
-
+//to delete post
 async function deletePost(req,res){
     try{
         const post = await Post.findOne({_id:req.params.id})
@@ -115,6 +116,9 @@ async function deletePost(req,res){
         })
     }
 }
+
+
+//to comment on the post
 async function commentOnPost(req,res){
     try{
         const {commentBody}=req.body;
@@ -147,6 +151,8 @@ async function commentOnPost(req,res){
         })
     }
 }
+
+// to delete the comment 
 async function deleteComment(req,res){
     try{
         const comment=await Comment.findById(req.params.id)
@@ -183,6 +189,9 @@ async function deleteComment(req,res){
         })
     }
 }
+
+
+//to do like and dislike on the post 
 async function likeDislikePost(req,res){
     try{
     
@@ -191,7 +200,7 @@ async function likeDislikePost(req,res){
         const userId=req.user._id;
 
         const found=post.postLikes.find(id=>id.toString()===userId.toString());
-        console.log(found);
+        console.log(found);//first check if the loggedIn user already liked the post of this user or not and if he does then do do unlike or else like the post as below 
         if(!found){
             post.postLikes.push(req.user._id);
 
@@ -199,7 +208,7 @@ async function likeDislikePost(req,res){
 
             return res.status(200).json({
                 liked:"liked",
-                likesNum:post.postLikes.length
+                likesNum:post.postLikes.length   //the postLikes is an array containing the user ids of the users who liked the post 
             })
         }
         
@@ -208,7 +217,7 @@ async function likeDislikePost(req,res){
         await post.save();
 
         return res.status(200).json({
-            error:"unliked",
+            unliked:"unliked",
             likesNum:post.postLikes.length 
         })
     }
@@ -220,7 +229,7 @@ async function likeDislikePost(req,res){
     }
 }
 
-
+// to report a post but this controller is pending !!!!
 async function reportPost(req,res){
     const {reportBody}=req.body;
 
@@ -232,10 +241,9 @@ async function reportPost(req,res){
     else if(post.report.length>10){
         //delete post 
     }
-
 }
 
-
+//to show the post of the user whose profile is opened 
 async function getUserPosts(req,res){
 
     try{
@@ -259,6 +267,8 @@ async function getUserPosts(req,res){
 
 
 }
+
+
 
 
 module.exports={

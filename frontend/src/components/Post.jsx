@@ -1,14 +1,24 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { useAuthContext } from '../context/authContext'
 import { MoreHorizontal } from 'lucide-react'
 import LikeDislike from './LikeDislike'
 import { extractTime } from '../utils/extractTime'
 import { Link } from 'react-router-dom'
+import Comment from './Comment'
 
 
 const Post = (props) => {
 
     const {authUser}=useAuthContext()
+
+    const [isSetComment,setComment]=useState(false);
+
+    const handleCommentClick=()=>{
+      setComment((prev)=>!prev);
+      console.log("clicked")
+    }
+
+    
 
 
 
@@ -26,15 +36,18 @@ const Post = (props) => {
         <MoreHorizontal size={20} />
       </button>
     </div>
+    <img src={`/api/placeholder/600/400`} alt="Post" className="post-image" />
+    
+    <div className="post-actions">
+    <LikeDislike postId={props.post._id} post={props.post}/>
+      <button onClick={handleCommentClick}>💬 {props.post.postComments.length}</button>
+      
+      <button>🔄 ?</button>    
+    </div>
     <p className="post-content">
       {props.post.postCaption}
     </p>
-    <img src={`/api/placeholder/600/400`} alt="Post" className="post-image" />
-    <div className="post-actions">
-    <LikeDislike postId={props.post._id} post={props.post}/>
-      <button>💬 {props.post.postComments.length}</button>
-      <button>🔄 ?</button>    
-    </div>
+    {isSetComment==true?<Comment comments={props.post.postComments}/>:<span></span>}
   </div>
   )
 }

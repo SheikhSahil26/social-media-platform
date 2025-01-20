@@ -1,7 +1,7 @@
 const User=require("../models/userModel")
 const generateTokenAndSetCookie=require("../utils/generateToken")
 
-
+//this is signup controller
 async function userSignUp(req,res){
 
     try{
@@ -68,6 +68,7 @@ async function userSignUp(req,res){
 //     console.log("otp generated "+OTP); 
 // }
 
+//this is login controller
 
 async function userLogin(req,res){
 
@@ -106,6 +107,8 @@ async function userLogin(req,res){
         })
     }
 }
+
+//this is log out controller
 
 async function userLogOut(req,res){
 

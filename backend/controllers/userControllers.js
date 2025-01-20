@@ -1,7 +1,8 @@
 const User = require("../models/userModel")
 const path=require("path")
 
-
+// to see the profile of the user 
+// be it logged in user see his own profile or other person sees his/her profile
 async function seeProfile(req, res) {
     try{
         const username = req.params.username;
@@ -32,6 +33,8 @@ async function seeProfile(req, res) {
     }
 }
 
+
+//to follow and unfollow user 
 async function followUnFollowUser(req,res){
 
     try{
@@ -42,7 +45,7 @@ async function followUnFollowUser(req,res){
         console.log(currentUser.followings)
 
        
-    
+        // check if the logged in user already follows the user or not if follows then remove it from the array of followers of the profile user or add it to the array.....
         const found=currentUser.followings.find(id=>id.toString()===userToFollow._id.toString())
 
         console.log(found)
@@ -82,6 +85,8 @@ async function followUnFollowUser(req,res){
     }
 }
 
+
+//to edit profile
 async function editProfile(req,res){
     try{
         const {username,bio}=req.body;
@@ -92,6 +97,7 @@ async function editProfile(req,res){
 
         const existingAlready= await User.findOne({username:username})
 
+        //we check if the edited username is not equal to any existing user other than the users himself username 
         if(existingAlready && existingAlready._id.toString()!==req.user._id.toString())return res.status(400).json({error:"this username already present"});
 
         user.username=username;
@@ -127,9 +133,33 @@ async function editProfile(req,res){
     
 }
 
+// to get allusers apart from the logged in user to show as suggestions in frontend
+async function getAllUsers(req,res){
+
+    const loggedInUserId=req.user._id
+
+    try{
+        const allUsers=await User.find({_id:{$ne:loggedInUserId}})
+
+        console.log(allUsers);
+
+        return res.status(200).json({
+            users:allUsers
+        })
+    }catch(error){
+        return res.status(500).json({
+            error:"error fetching all users for displaying in homepage"
+        })
+    }
+
+   
+
+}
+
 
 module.exports = {
     seeProfile,
     followUnFollowUser,
     editProfile,
+    getAllUsers,
 }

@@ -1,5 +1,5 @@
 const router=require('express').Router();
-const {seeProfile,followUnFollowUser,editProfile}=require("../controllers/userControllers")
+const {seeProfile,followUnFollowUser,editProfile,getAllUsers}=require("../controllers/userControllers")
 const {protectedRoutes}=require("../middlewares/protectedRoutes")
 const multer=require("multer");
 const path=require("path");
@@ -28,5 +28,7 @@ router.get('/profile/:username',protectedRoutes,seeProfile);
 router.post("/followuser/:username",protectedRoutes,followUnFollowUser);
 
 router.post("/editprofile",protectedRoutes,upload.single('profilePicUrl'),editProfile);
+
+router.get("/getusers",protectedRoutes,getAllUsers);
 
 module.exports=router;

@@ -36,7 +36,7 @@ const Profile = () => {
 
     }
 
-    
+
     const { authUser, loading } = useAuthContext();
 
     const { profileUser, setProfileUser } = useProfileContext();
@@ -52,16 +52,12 @@ const Profile = () => {
 
 
 
-    
-
-
-
     // console.log(authUser)
 
 
 
     const { posts } = useGetPost(username);
-   
+
 
 
     const navigate = useNavigate()
@@ -96,13 +92,13 @@ const Profile = () => {
                             {
                                 authUser.username === profileUser.username ?
                                     (<Link to={'/editprofile'}>
-                                        <button>Edit Profile</button>
+                                        <button style={{margin:20}}>Edit Profile</button>
                                         <Link to={'/addpost'}><button>Add Post</button></Link>
-                                    </Link>) : ((profileUser.followers.length>0) && (profileUser.followers.some(id=>id.toString()===authUser._id.toString()))?<button onClick={handleFollow}>Unfollow</button>:
-                                    <button onClick={handleFollow}>follow</button>)
+                                    </Link>) : ((profileUser.followers.length > 0) && (profileUser.followers.some(id => id.toString() === authUser._id.toString())) ? <button onClick={handleFollow}>Unfollow</button> :
+                                        <button onClick={handleFollow}>follow</button>)
 
-                                    
-                                    }
+
+                            }
 
                         </div>
 

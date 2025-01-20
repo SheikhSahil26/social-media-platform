@@ -11,13 +11,13 @@ import DropDown from '../components/DropDown';
 
 const HomePage = () => {
 
-  const {authUser}=useAuthContext()
-
-  console.log(authUser)
+  const {authUser}=useAuthContext()  // getting the context of the authUser means the loggedIn user!!!
 
   const [dropDown,setDropDown]=useState(false)
 
   const [posts,setPosts]=useState([])
+
+  const [users,setUsers]=useState([]);
 
   useEffect(()=>{
 
@@ -41,6 +41,34 @@ const HomePage = () => {
     }
 
     getAllPosts()
+
+},[])
+
+
+useEffect(()=>{
+
+  
+  const getAllUsers=async()=>{
+
+    try{
+      const res=await fetch("/api/user/getusers",{
+        method:"GET",
+      })
+      const data=await res.json();
+
+      console.log(data)
+
+      setUsers(data.users || [])
+  
+      if(data.error) throw new Error(data.error);
+    }
+    catch(error){
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+  getAllUsers();
+
 
 },[])
 
@@ -156,16 +184,16 @@ const HomePage = () => {
           <div className="section-header">
             <h3>Suggested for you</h3>
           </div>
-          {[1, 2, 3].map(i => (
-            <div key={i} className="suggestion-item">
+          {Array.isArray(users) && users.length>0 ? (users.map(user => (
+            <div key={user.username} className="suggestion-item">
               <img src={`/api/placeholder/40/40`} alt="Suggested user" className="avatar" />
               <div className="suggestion-info">
-                <h4>User Name</h4>
-                <span>Followed by User {i}</span>
+                <Link style={{textDecoration:'none'}} to={`/profile/${user.username}`}><h4 >{user.username}</h4></Link>
+                <span>Followed by User X</span>
               </div>
               <button className="follow-btn">Follow</button>
             </div>
-          ))}
+          ))): <h3>No users to show</h3>}
         </div>
       </aside>
     </div>

@@ -1,23 +1,48 @@
 import React from 'react'
 import { Heart } from 'lucide-react'
 import { useState,useEffect } from 'react'
+import useLikeDislike from '../hooks/useLikeDislike'
+import { useAuthContext } from '../context/authContext'
 
 const LikeDislike = (props) => {
 
+  const {authUser,setAuthUser}=useAuthContext();
 
   const [likeCount,setLikeCount]=useState(props.post.postLikes.length)
-  const [isLiked,setIsLiked]=useState(false)
+
+  //to check whether the user has already liked the post or not!!!!
+  
+  const [isLiked,setIsLiked]=useState(props.post.postLikes.some(id=>id.toString()===authUser._id.toString()))
   const [isAnimating,setIsAnimating]=useState(false);
+
 
   const handleLikeClick=async(e)=>{
       e.preventDefault();
-      setIsLiked((prev)=>!prev)
-      setIsAnimating(true)
+      try{
+        const res=await fetch(`/api/post/like/${props.postId}`,{
+          method:"POST",
+        })
+  
+        const data=await res.json();
+
+        if(data.error) throw new Error(data.error)
+  
+        console.log(data);
+
+        console.log(isLiked)
+  
+        setLikeCount(data.likesNum)
+  
+  
+        setIsLiked((prev)=>!prev)
+        setIsAnimating(true)
+      }catch(error){
+        toast.error(error.message)
+      }
+      
      
   }
 
-  console.log(isAnimating)
-  console.log(isLiked)
 
   useEffect(() => {
     if (isAnimating) {
@@ -26,19 +51,7 @@ const LikeDislike = (props) => {
     }
   }, [isAnimating]);
 
-  useEffect(()=>{
-    
-    const fetchLike=async ()=>{
-      const res=await fetch(`/api/post/like/${props.postId}`,{
-        method:"POST",
-      })
-      const data=await res.json();
-      console.log(data)
-    }
-
-    fetchLike()
-
-  },[isLiked])
+  
 
 
 
