@@ -17,6 +17,8 @@ const Profile = () => {
 
     const [userData, setUserData] = useState({});
 
+    const [followed,setFollowed]=useState()//baad mai karunga its implementation 
+
     const { username } = useParams()
 
     const { fetchUserProfile } = useGetProfile(username);
@@ -54,7 +56,7 @@ const Profile = () => {
 
     // console.log(authUser)
 
-
+    console.log(profileUser.profilePicUrl)
 
     const { posts } = useGetPost(username);
 

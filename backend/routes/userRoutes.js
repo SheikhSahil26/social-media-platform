@@ -21,7 +21,7 @@ const storage=multer.diskStorage({
 const upload=multer({storage});
 
 
-
+// the explaination of the controllers are in the controllers folder
 
 router.get('/profile/:username',protectedRoutes,seeProfile);
 

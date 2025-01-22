@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router();
-const {getAllPosts,addPost,deletePost,commentOnPost,deleteComment,likeDislikePost,reportPost,getUserPosts}=require("../controllers/postControllers")
+const {getAllPosts,addPost,deletePost,commentOnPost,deleteComment,likeDislikePost,reportPost,getUserPosts,getPostComments}=require("../controllers/postControllers")
 const {protectedRoutes}=require("../middlewares/protectedRoutes");
 const multer=require("multer");
 const path=require("path");
@@ -21,6 +21,8 @@ const storage=multer.diskStorage({
 
 const upload=multer({storage});
 
+//the explaination of the controllers is in the controller folder!!!
+
 router.get("/getallposts",protectedRoutes,getAllPosts);
 
 router.post("/addpost",protectedRoutes,upload.single('postImageUrl'),addPost);
@@ -36,6 +38,8 @@ router.post("/like/:id",protectedRoutes,likeDislikePost);
 router.post("/reportpost/:id",protectedRoutes,reportPost);
 
 router.get("/getposts/:username",protectedRoutes,getUserPosts)
+
+router.get("/getpostcomments/:postId",protectedRoutes,getPostComments);
 
 
 module.exports=router;

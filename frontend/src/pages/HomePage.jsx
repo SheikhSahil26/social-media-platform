@@ -44,10 +44,9 @@ const HomePage = () => {
 
 },[])
 
-
+//this is used for getting the users other than the loggedin user everytime the homepage is mounted on the screen
 useEffect(()=>{
 
-  
   const getAllUsers=async()=>{
 
     try{

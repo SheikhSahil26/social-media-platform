@@ -47,7 +47,7 @@ const Post = (props) => {
     <p className="post-content">
       {props.post.postCaption}
     </p>
-    {isSetComment==true?<Comment comments={props.post.postComments}/>:<span></span>}
+    {isSetComment==true?<Comment forPost={props.post._id}/>:<span></span>}
   </div>
   )
 }

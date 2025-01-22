@@ -9,11 +9,14 @@ import EditProfile from './pages/editProfile.jsx';
 import Profile from './pages/Profile.jsx';
 import AddPost from './pages/AddPost.jsx';
 
+
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
   const {authUser}=useAuthContext();
+
+  
 
   return (
     <>

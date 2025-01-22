@@ -14,7 +14,7 @@ const PORT=2000;
 const cors=require("cors");
 
 app.use(cors({
-    origin:"http://localhost:4000",
+    origin:"http://localhost:4000",//this is frontend URL for cors 
     methods:['GET','POST'],
     credentials:true,
 }))

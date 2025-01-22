@@ -249,9 +249,9 @@ async function getUserPosts(req,res){
     try{
         const user=await User.findOne({username:req.params.username});
     
-        const posts=await Post.find({postedBy:user._id});
+        const posts=await Post.find({postedBy:user._id}).sort({createdAt:-1}); //sorted on the basis of recent creation time
 
-        console.log(posts)
+    
     
         if(posts){
             return res.status(200).json({
@@ -268,6 +268,37 @@ async function getUserPosts(req,res){
 
 }
 
+async function getPostComments(req,res){
+
+    const postId=req.params.postId;
+
+    try{
+        const comments=await Comment.find({forPost:postId}).sort({createdAt:-1});
+    
+        if(!comments){
+            return res.status(404).json({
+                error:"error fetching comments"
+            })
+        }
+
+        console.log(comments)
+
+        return res.status(200).json({
+            noOfComments:comments.length,
+            comments:comments,
+        })
+        
+
+
+    }catch(error){
+        console.log(error)
+        return res.status(500).json({
+            error:"error fetching comments of user"
+        })
+    }
+
+}
+
 
 
 
@@ -279,5 +310,6 @@ module.exports={
     deleteComment,
     likeDislikePost,
     reportPost,
-    getUserPosts
+    getUserPosts,
+    getPostComments,
 }
