@@ -147,15 +147,15 @@ const Profile = () => {
                             </div>
                             <div className="info-item">
                                 <i className="fas fa-globe"></i>
-                                <a href="https://johndoe.dev">johndoe.dev</a>
+                                {/* <a href="https://johndoe.dev">johndoe.dev</a> */}
                             </div>
                         </div>
 
                         {/* <!-- Social Links --> */}
                         <div className="social-links">
-                            <a href="#" className="social-icon"><i className="fab fa-github"></i></a>
+                            {/* <a href="#" className="social-icon"><i className="fab fa-github"></i></a>
                             <a href="#" className="social-icon"><i className="fab fa-twitter"></i></a>
-                            <a href="#" className="social-icon"><i className="fab fa-linkedin"></i></a>
+                            <a href="#" className="social-icon"><i className="fab fa-linkedin"></i></a> */}
                         </div>
                     </div>
                 </div>

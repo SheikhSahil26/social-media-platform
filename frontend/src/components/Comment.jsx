@@ -3,13 +3,12 @@ import React,{useState,useEffect} from 'react'
 // import { Avatar } from "@/components/ui/avatar";
 import { MessageCircle, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
+//erro i am facing is that initially the comments array is empty and after some time it gets filled with the top 3 comments 
 const Comment = (props) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const [allComments, setAllComments] = useState([]);
-
-    let comments=[]
+    const [comments,setComments]=useState([])
     useEffect(()=>{
       const fetchComments=async()=>{
         const res=await fetch(`/api/post/getpostcomments/${props.forPost}`,{
@@ -21,18 +20,17 @@ const Comment = (props) => {
 
         setAllComments(data.comments)//this is all comments of the post
 
-        comments=[allComments[0],allComments[1],allComments[2]] //this are the comments which will be shown in homepage of with the post and remaining willl be in other separate page
+         //this are the comments which will be shown in homepage of with the post and remaining willl be in other separate page
+        setComments(data.comments.slice(0,3))
 
-
-         console.log(comments)
+         
 
       }
       fetchComments()
     },[]) 
 
 
-
-
+    console.log(comments)
   
     const handleAddComment = (e) => {
 
@@ -101,7 +99,7 @@ const Comment = (props) => {
                       <span className="text-gray-400 text-xs">•</span>
                       <span className="text-gray-400 text-xs">{comment.createdAt}</span>
                     </div>
-                    <p className="text-sm mt-1">{comment.text}</p>
+                    {/* <p className="text-sm mt-1">{comment.text}</p> */}
                     <div className="flex items-center gap-4 mt-2">
                       <button style={{margin:10}}className="text-xs text-gray-500 hover:text-blue-600">Like</button>
                       <button className="text-xs text-gray-500 hover:text-blue-600">Reply</button>

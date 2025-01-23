@@ -19,6 +19,8 @@ const Post = (props) => {
     }
 
     
+    console.log(props.post.postImageUrl);
+    
 
 
 
