@@ -1,5 +1,7 @@
 const User = require("../models/userModel")
 const path=require("path")
+const cloudinary=require("../utils/cloudinary")
+const fs=require("fs")
 
 // to see the profile of the user 
 // be it logged in user see his own profile or other person sees his/her profile
@@ -91,8 +93,13 @@ async function editProfile(req,res){
     try{
         const {username,bio}=req.body;
 
-        const file=req.file
-        console.log(file)
+        
+
+          const response = await cloudinary.uploader.upload(req.file.path,{
+                    resource_type:"auto",
+                })
+                console.log(response.url);
+        
         const user=await User.findOne({_id:req.user.id});
 
         const existingAlready= await User.findOne({username:username})
@@ -102,10 +109,12 @@ async function editProfile(req,res){
 
         user.username=username;
         user.bio=bio;
-        user.profilePicUrl=req.file?`/image/${req.file.originalname}`:"";
+        user.profilePicUrl=response.url;
 
         console.log(req.file.path)
         console.log(user.profilePicUrl)
+
+        fs.unlinkSync(req.file.path)
 
         await user.save();
  

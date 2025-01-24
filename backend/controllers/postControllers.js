@@ -2,6 +2,8 @@ const Post=require("../models/postModel");
 const User=require("../models/userModel")
 const Comment=require("../models/commentModel")
 const { findByIdAndUpdate, findById } = require("../models/userModel");
+const cloudinary=require("../utils/cloudinary")
+const fs=require("fs")
 
 //this is for showing all post in the homepage of the platform
 async function getAllPosts(req,res){
@@ -10,7 +12,6 @@ async function getAllPosts(req,res){
 //fetching post after sorting them in descending order of their created time so we get the latest post first
         const Posts=await Post.find().populate('postedBy','username profilePicUrl').sort({createdAt:-1}); 
         //postedBy is a refrence to another object model so from that we want only the username and profilepic of user thats y populate.....
-        console.log(Posts);
 
         return res.status(200).json({
             posts:Posts,
@@ -29,17 +30,19 @@ async function addPost(req,res){
     try{
         const {postCaption}=req.body;
 
-        const file=req.file;
+        let imageUrl=""
 
-        console.log(file)
-
+        const response = await cloudinary.uploader.upload(req.file.path,{
+            resource_type:"auto",
+        })
+        console.log(response.url);
         const userPosts=await Post.find({postedBy:req.user._id});
 
         // console.log(req.user);
         // console.log(req.user.bio);
     
         const newPost=new Post({
-            postImageUrl:req.file?`/posts/${req.file.originalname}`:"",
+            postImageUrl:response.url,
             postCaption,
             postedBy:req.user._id,
             postlikes:[],
@@ -54,9 +57,11 @@ async function addPost(req,res){
 
             await user.save();
 
+            fs.unlinkSync(req.file.path)
     
             return res.status(200).json({
                 success:"posted successfully",
+                msg:"image uploaded to cloud successfully"
             })
         }
         else{
@@ -67,6 +72,7 @@ async function addPost(req,res){
     }
     catch(error){
         console.log(error)
+        
         return res.status(500).json({
             error:"internal server error",
         })

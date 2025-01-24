@@ -128,7 +128,7 @@ const Profile = () => {
 
                         {Array.isArray(posts) && posts.length > 0 ? (
                             posts.map((post) => (
-                                <Post key={post._id} post={post} username={username} />
+                                <Post key={post._id} post={post} username={username} profilePic={profileUser.profilePicUrl} />
                             ))
                         ) : (
                             <h1>No posts to show</h1>

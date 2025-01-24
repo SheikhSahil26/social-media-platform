@@ -28,7 +28,7 @@ const Post = (props) => {
     <div className="post-card">
     <div className="post-header">
       <div className="post-author">
-        <img src={`/api/placeholder/40/40`} alt="User avatar" className="avatar" />
+        <img src={props.profilePic} alt="User avatar" className="avatar" />
         <div>
           <Link style={{textDecoration:'none'}} to={`/profile/${props.username}`}><h3 style={{textDecoration:'none'}}>{props.username}</h3></Link>
           <span>{extractTime(props.post.createdAt)}</span>
@@ -38,7 +38,7 @@ const Post = (props) => {
         <MoreHorizontal size={20} />
       </button>
     </div>
-    <img src={`/api/placeholder/600/400`} alt="Post" className="post-image" />
+    <img src={props.post.postImageUrl} alt="Post" className="post-image" />
     
     <div className="post-actions">
     <LikeDislike postId={props.post._id} post={props.post}/>

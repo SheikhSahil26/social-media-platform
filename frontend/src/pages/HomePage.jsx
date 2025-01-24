@@ -123,7 +123,7 @@ useEffect(()=>{
             </button>
             <div className="user-menu">
               <Link to={`/profile/${authUser.username}`} style={{textDecoration:'none'}}>
-              <img src="/api/placeholder/32/32" alt="" className="avatar" />
+              <img src={authUser.profilePicUrl} alt="" className="avatar" />
               <span style={{textDecoration:'none'}}>{authUser.username}</span>
               </Link>
             </div>
@@ -153,7 +153,7 @@ useEffect(()=>{
 
             {Array.isArray(posts) && posts.length > 0 ? (
                             posts.map((post) => (
-                                <Post key={post._id} post={post} username={post.postedBy.username} />
+                                <Post key={post._id} post={post} username={post.postedBy.username} profilePic={post.postedBy.profilePicUrl} />
                             ))
                         ) : (
                             <h1>No posts to show</h1>
@@ -185,7 +185,7 @@ useEffect(()=>{
           </div>
           {Array.isArray(users) && users.length>0 ? (users.map(user => (
             <div key={user.username} className="suggestion-item">
-              <img src={`/api/placeholder/40/40`} alt="Suggested user" className="avatar" />
+              <img src={user.profilePicUrl} alt="Suggested user" className="avatar" />
               <div className="suggestion-info">
                 <Link style={{textDecoration:'none'}} to={`/profile/${user.username}`}><h4 >{user.username}</h4></Link>
                 <span>Followed by User X</span>

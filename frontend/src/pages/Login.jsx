@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './login.css'
 import useLogin from '../hooks/useLogin'
+import { Link } from 'react-router-dom'
 
 const Login = () => {
 
@@ -77,7 +78,7 @@ const Login = () => {
           </form>
 
           <div className="signup-link">
-            New to Connect? <a href="/signup">Create account</a>
+            New to Connect? <Link to={'/signup'}>create new Account</Link>
           </div>
         </div>
       </div>
