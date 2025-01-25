@@ -22,7 +22,7 @@ Welcome to **SocialConnect**, your next-generation social media platform! Design
 
 SocialConnect is built with a modern and robust tech stack:
 
-- **Frontend**: React.js, HTML, CSS
+- **Frontend**: React.js, HTML, CSS ,Javascript
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 
