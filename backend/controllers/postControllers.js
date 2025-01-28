@@ -4,6 +4,8 @@ const Comment=require("../models/commentModel")
 const { findByIdAndUpdate, findById } = require("../models/userModel");
 const cloudinary=require("../utils/cloudinary")
 const fs=require("fs")
+const Story=require("../models/storyModel")
+const {getAllUsers}=require("./userControllers")
 
 //this is for showing all post in the homepage of the platform
 async function getAllPosts(req,res){
@@ -305,6 +307,62 @@ async function getPostComments(req,res){
 
 }
 
+async function addStory(req,res){
+    try{
+        console.log(req.file.path)
+        console.log(req.user)
+
+        const response=await cloudinary.uploader.upload(req.file.path,{
+            resource_type:"auto",
+        })
+
+        console.log(response)
+
+       
+
+        const newStory=new Story({
+            storyContentUrl:response.url,
+            createdBy:req.user._id,
+        })
+
+        if(newStory){
+            await newStory.save();
+
+            const user=await User.findById(req.user._id)
+
+            user.stories.push(newStory);
+
+            fs.unlinkSync(req.file.path)
+
+            return res.status(200).json({
+                success:"story posted",
+            })
+
+
+
+        }
+        else{
+            return res.status(500).json({
+                error:"failed to upload story"
+            })
+        }
+        
+
+
+
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            error:"cant post story due to internal server error",
+        })
+    }
+}
+// this is function is to get the stories of the users whom our logged in user follows
+async function getAllUserStories(req,res){
+
+   //later i will do implementation of efficient story feature 
+
+}
 
 
 
@@ -318,4 +376,6 @@ module.exports={
     reportPost,
     getUserPosts,
     getPostComments,
+    addStory,
+    getAllUserStories
 }

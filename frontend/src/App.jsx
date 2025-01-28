@@ -8,9 +8,10 @@ import { useAuthContext } from './context/authContext.jsx'
 import EditProfile from './pages/editProfile.jsx';
 import Profile from './pages/Profile.jsx';
 import AddPost from './pages/AddPost.jsx';
-
+import SeeComments from './pages/SeeComments.jsx';
 
 import './App.css'
+import AddStory from './pages/AddStory.jsx';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -28,7 +29,8 @@ function App() {
       <Route path="/profile/:username" element={authUser?<Profile/>:<Navigate to='/login'/>}/>
       <Route path="/editprofile" element={authUser?<EditProfile/>:<Navigate to='/login' />}/>
       <Route path="/addpost" element={authUser?<AddPost/>:<Navigate to="/login"/>}></Route>
-
+      <Route path="/addstory" element={authUser?<AddStory/>:<Navigate to="/login"/>}></Route>
+      <Route path='/seecomments/:postId' element={authUser?<SeeComments/>:<Navigate to="/login"/>}></Route>
       </Routes>
       
       <Toaster/>

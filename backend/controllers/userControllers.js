@@ -145,6 +145,8 @@ async function editProfile(req,res){
 // to get allusers apart from the logged in user to show as suggestions in frontend
 async function getAllUsers(req,res){
 
+    console.log(req.user)
+
     const loggedInUserId=req.user._id
 
     try{
@@ -155,7 +157,7 @@ async function getAllUsers(req,res){
         return res.status(200).json({
             users:allUsers
         })
-    }catch(error){
+    }catch(error){ 
         return res.status(500).json({
             error:"error fetching all users for displaying in homepage"
         })

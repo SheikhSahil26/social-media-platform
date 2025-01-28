@@ -2,13 +2,23 @@ import React,{useState,useEffect} from 'react'
 // import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 // import { Avatar } from "@/components/ui/avatar";
 import { MessageCircle, Send } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
+import useAddComment from '../hooks/useAddComment';
 //erro i am facing is that initially the comments array is empty and after some time it gets filled with the top 3 comments 
 const Comment = (props) => {
+
+  // const navigate=useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
     const [allComments, setAllComments] = useState([]);
     const [comments,setComments]=useState([])
+    const [inputs,setInputs]=useState({
+      commentBody:"",
+      postId:props.forPost,
+    })
+
+    const {addComment}=useAddComment()
+
     useEffect(()=>{
       const fetchComments=async()=>{
         const res=await fetch(`/api/post/getpostcomments/${props.forPost}`,{
@@ -20,7 +30,7 @@ const Comment = (props) => {
 
         setAllComments(data.comments)//this is all comments of the post
 
-         //this are the comments which will be shown in homepage of with the post and remaining willl be in other separate page
+       //this are the comments which will be shown in homepage of with the post and remaining willl be in other separate page
         setComments(data.comments.slice(0,3))
 
          
@@ -31,9 +41,11 @@ const Comment = (props) => {
 
 
     console.log(comments)
+    console.log(inputs)
   
-    const handleAddComment = (e) => {
-
+    const handleAddComment =async (e) => {
+      e.preventDefault();
+      await addComment(inputs)
     };
 
 
@@ -68,8 +80,8 @@ const Comment = (props) => {
             <div className="flex-1 flex gap-2">
               <input
                 type="text"
-                // value={}
-                // onChange={(e) => setNewComment(e.target.value)}
+                value={inputs.commentBody}
+                onChange={(e) => setInputs({...inputs,commentBody:e.target.value})}
                 placeholder="Add a comment..."
                 className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -79,7 +91,7 @@ const Comment = (props) => {
                 style={{margin:10}}
                 className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Send size={25} />
+                <Send size={24} />
               </button>
             </div>
           </form>
@@ -108,8 +120,10 @@ const Comment = (props) => {
                 </div>
               </div>
             ))}
-            <Link to={`/seecomments`}><button>see all comments</button></Link>
-          </div>
+            <Link to={`/seecomments/${props.forPost}?comments=${encodeURIComponent(
+    JSON.stringify(comments)
+  )}`}><button>see all comments</button></Link>
+          </div>  
         {/* </DialogContent>
       </Dialog> */}
     </div>

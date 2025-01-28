@@ -44,6 +44,23 @@ const HomePage = () => {
 
 },[])
 
+
+useEffect(()=>{
+    const getAllUserStories=async()=>{
+      try{
+        const res=await fetch("")
+      }catch(error){
+        console.log(error)
+        toast.error(error.message)
+      }
+    }
+},[])
+
+
+
+
+
+
 //this is used for getting the users other than the loggedin user everytime the homepage is mounted on the screen
 useEffect(()=>{
 
@@ -132,11 +149,14 @@ useEffect(()=>{
 
         <div className="content-wrapper">
           <div className="stories-container">
-            <div className="story create-story">
-              <div className="story-avatar">+</div>
-              <span>Add Story</span>
+            <Link to={'/addstory'} style={{textDecoration:"none"}}>
+            <div className="story create-story" style={{textDecoration:"none"}}>
+              <div className="story-avatar" style={{textDecoration:"none"}}>+</div>
+              <span style={{textDecoration:"none"}}>Add Story</span>
             </div>
-            {[1, 2, 3, 4, 5].map(i => (
+            
+            </Link>
+            {[1].map(i => (
               <div key={i} className="story">
                 <img src={`/api/placeholder/56/56`} alt={`Story ${i}`} className="story-avatar" />
                 <span>User {i}</span>

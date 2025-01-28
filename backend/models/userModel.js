@@ -37,7 +37,13 @@ const userSchema=new Schema({
     accountType:{
         type:String,
         default:"public",
-    }
+    },
+    stories:[
+        {
+            type:Schema.Types.ObjectId,
+            ref:"Story"
+        }
+    ]
 
 
 },{timestamps:true});

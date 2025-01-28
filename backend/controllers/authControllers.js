@@ -5,7 +5,7 @@ const generateTokenAndSetCookie=require("../utils/generateToken")
 async function userSignUp(req,res){
 
     try{
-        const {username,password,profilePicUrl,followers,followings,totalPosts,bio}=req.body;
+        const {username,password,profilePicUrl,followers,followings,totalPosts,bio,stories}=req.body;
     
         const alreadyExist=await User.findOne({username});
     
@@ -22,7 +22,8 @@ async function userSignUp(req,res){
             profilePicUrl,
             followers,
             followings,
-            totalPosts, 
+            totalPosts,
+            stories, 
         })
 
         if(newUser){
@@ -42,6 +43,7 @@ async function userSignUp(req,res){
                 totalPosts:newUser.totalPosts,
                 profilePicUrl:newUser.profilePicUrl,
                 bio:newUser.bio,
+                stories:newUser.stories,
 
             })
 
@@ -97,6 +99,7 @@ async function userLogin(req,res){
             totalPosts:findUser.totalPosts,
             profilePicUrl:findUser.profilePicUrl,
             bio:findUser.bio,
+            stories:findUser.stories,
         })
 
     }

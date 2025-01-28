@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router();
-const {getAllPosts,addPost,deletePost,commentOnPost,deleteComment,likeDislikePost,reportPost,getUserPosts,getPostComments}=require("../controllers/postControllers")
+const {getAllPosts,addPost,deletePost,commentOnPost,deleteComment,likeDislikePost,reportPost,getUserPosts,getPostComments,addStory,getAllUserStories}=require("../controllers/postControllers")
 const {protectedRoutes}=require("../middlewares/protectedRoutes");
 const multer=require("multer");
 const path=require("path");
@@ -27,9 +27,9 @@ router.get("/getallposts",protectedRoutes,getAllPosts);
 
 router.post("/addpost",protectedRoutes,upload.single('postImageUrl'),addPost);
 
-router.post("/deletepost/:id",protectedRoutes,deletePost);
+router.post("/deletepost/:id",protectedRoutes,deletePost);//:id is id of the post which we want to delete
 
-router.post("/comment/:id",protectedRoutes,commentOnPost);
+router.post("/comment/:id",protectedRoutes,commentOnPost);//:id is the id of the post on which we want to add comment
 
 router.post("/deletecomment/:id",protectedRoutes,deleteComment);
 
@@ -40,6 +40,10 @@ router.post("/reportpost/:id",protectedRoutes,reportPost);
 router.get("/getposts/:username",protectedRoutes,getUserPosts)
 
 router.get("/getpostcomments/:postId",protectedRoutes,getPostComments);
+
+router.post("/story/add",protectedRoutes,upload.single('storyContentUrl'),addStory)
+
+router.get("/story/getalluserstories",protectedRoutes,getAllUserStories) // all users means whom the loggedIn user follows 
 
 
 module.exports=router;
