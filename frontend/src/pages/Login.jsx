@@ -11,6 +11,7 @@ const Login = () => {
     username:"",
     password:""
   })
+  console.log(inputs)
 
   const handleSubmit=async(e)=>{
     e.preventDefault()

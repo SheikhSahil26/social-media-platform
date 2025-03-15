@@ -9,6 +9,7 @@ const AddStory = () => {
     const [inputs,setInputs]=useState({
         storyContentUrl:{},
     })
+    const [loading,setLoading]=useState(false)
     
 
     const {addStory}=useAddStory();
@@ -17,8 +18,12 @@ const AddStory = () => {
 
     const handleSubmit=async(e)=>{
         e.preventDefault();
+        setLoading(true);
         await addStory(inputs);
+        setLoading(false);
     }
+    
+    
 
   return (
     <div>
@@ -40,7 +45,7 @@ const AddStory = () => {
         </div>
 
         <div className="post-footer">
-            <button type="submit" className="share-button">Share</button>
+            <button type="submit" className="share-button"  disabled={loading}>{loading?"uploading...":"upload"}</button>
         </div>
         </form>
     </div>

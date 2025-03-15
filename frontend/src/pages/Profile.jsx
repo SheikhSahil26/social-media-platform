@@ -65,7 +65,7 @@ const Profile = () => {
     const navigate = useNavigate()
 
     if (loading) {
-        return <h3>loading....</h3>
+        return <h1>loading....</h1>
     }
 
 

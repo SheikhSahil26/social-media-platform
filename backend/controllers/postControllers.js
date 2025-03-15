@@ -14,7 +14,7 @@ async function getAllPosts(req,res){
 //fetching post after sorting them in descending order of their created time so we get the latest post first
         const Posts=await Post.find().populate('postedBy','username profilePicUrl').sort({createdAt:-1}); 
         //postedBy is a refrence to another object model so from that we want only the username and profilepic of user thats y populate.....
-
+        console.log("posts",Posts)
         return res.status(200).json({
             posts:Posts,
         })
@@ -307,6 +307,33 @@ async function getPostComments(req,res){
 
 }
 
+
+//function to delete the story after the specified time 
+
+const scheduleDeletion = (storyId, expirationTime,userId) => {
+    const delay = expirationTime.getTime() - Date.now();
+    
+   
+    setTimeout(async () => {
+        try {
+            const user=await User.findById(userId)
+
+            user.stories=user.stories.filter((story)=>story._id.toString()!==storyId.toString())
+
+            await Story.findByIdAndDelete(storyId);
+
+            
+
+            user.save();
+
+            console.log(`Story ${storyId} deleted after expiration.`);
+        } catch (error) {
+            console.error("Error deleting story:", error);
+        }
+    }, delay);
+};
+
+
 async function addStory(req,res){
     try{
         console.log(req.file.path)
@@ -318,12 +345,17 @@ async function addStory(req,res){
 
         console.log(response)
 
+        const expirationTime = new Date();
+        expirationTime.setSeconds(expirationTime.getSeconds() + 20);
+
        
 
         const newStory=new Story({
             storyContentUrl:response.url,
-            createdBy:req.user._id,
+            postedBy:req.user._id,
         })
+
+        
 
         if(newStory){
             await newStory.save();
@@ -332,7 +364,14 @@ async function addStory(req,res){
 
             user.stories.push(newStory);
 
+            await user.save();
+
+            scheduleDeletion(newStory._id,expirationTime,req.user._id);
+
             fs.unlinkSync(req.file.path)
+
+
+            scheduleDeletion(newStory._id, expirationTime);
 
             return res.status(200).json({
                 success:"story posted",

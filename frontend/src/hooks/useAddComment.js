@@ -2,6 +2,8 @@ import React from 'react'
 
 const useAddComment = () => {
 
+  let response
+
   const addComment=async ({commentBody,postId})=>{
     const res=await fetch(`/api/post/comment/${postId}`,{
         method:"POST",

@@ -9,6 +9,7 @@ const AddPost = () => {
         postImageUrl:{},
         postCaption:"",
     })
+        const [loading,setLoading]=useState(false)
     
 
     const {addPost}=useAddPost();
@@ -16,7 +17,9 @@ const AddPost = () => {
     console.log(inputs)
     const handleSubmit=async(e)=>{
         e.preventDefault();
+        setLoading(true);
         await addPost(inputs);
+        setLoading(false);
     }
 
   return (
@@ -43,8 +46,7 @@ const AddPost = () => {
         </div>
 
         <div className="post-footer">
-            <button type="submit" className="share-button">Share</button>
-        </div>
+        <button type="submit" className="share-button"  disabled={loading}>{loading?"uploading...":"upload"}</button>         </div>
         </form>
     </div>
     </div>

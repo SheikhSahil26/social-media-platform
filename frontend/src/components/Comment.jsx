@@ -37,7 +37,7 @@ const Comment = (props) => {
 
       }
       fetchComments()
-    },[]) 
+    },[comments]) 
 
 
     console.log(comments)
@@ -121,7 +121,7 @@ const Comment = (props) => {
               </div>
             ))}
             <Link to={`/seecomments/${props.forPost}?comments=${encodeURIComponent(
-    JSON.stringify(comments)
+    JSON.stringify(allComments)
   )}`}><button>see all comments</button></Link>
           </div>  
         {/* </DialogContent>

@@ -1,12 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 
 const useAddStory = () => {
+
+    
+
     const addStory=async({storyContentUrl})=>{ 
         try{
             console.log(storyContentUrl)
+
+            if(!storyContentUrl)throw new Error("please upload a file")
+
+
             const formData = new FormData();
             formData.append('storyContentUrl', storyContentUrl); // Add StoryCOntent
+
+            
             
             const res=await fetch("/api/post/story/add",{
                 method:"POST",
@@ -27,6 +36,7 @@ const useAddStory = () => {
             console.log(error)
             toast.error(error.message);
         }
+        
     }
 
     return {addStory};

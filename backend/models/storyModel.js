@@ -12,7 +12,7 @@ const storySchema=new Schema({
     createdAt:{
         type:Date,
         default:Date.now(),
-        index:{expires:'1h'}//using TTL index for automatically deleting this story object after specified time!!
+        index:{expires:'30s'}//using TTL index for automatically deleting this story object after specified time!!
     },
 },{timestamps:true})
 

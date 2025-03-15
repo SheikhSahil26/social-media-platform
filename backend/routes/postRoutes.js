@@ -37,7 +37,7 @@ router.post("/like/:id",protectedRoutes,likeDislikePost);
 
 router.post("/reportpost/:id",protectedRoutes,reportPost);
 
-router.get("/getposts/:username",protectedRoutes,getUserPosts)
+router.get("/getposts/:username",protectedRoutes,getUserPosts);
 
 router.get("/getpostcomments/:postId",protectedRoutes,getPostComments);
 

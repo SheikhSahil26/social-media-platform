@@ -35,7 +35,7 @@ const LikeDislike = (props) => {
   
   
         setIsLiked((prev)=>!prev)
-        setIsAnimating(true)
+        setIsAnimating((prev)=>!prev);
       }catch(error){
         toast.error(error.message)
       }
