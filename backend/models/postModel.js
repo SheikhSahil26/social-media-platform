@@ -31,7 +31,11 @@ const postSchema=new Schema({
             type:String,
             required:false,
         }
-    ]
+    ],
+    publicId:{
+        type:String,
+        requried:true,
+    }
 },{timestamps:true});
 
 const Post=model("Post",postSchema);

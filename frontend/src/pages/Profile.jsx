@@ -13,11 +13,15 @@ import { useProfileContext } from '../context/profileContext'
 
 const Profile = () => {
 
+    const { authUser, loading } = useAuthContext();
+
+    const { profileUser, setProfileUser } = useProfileContext();
+
     const location = useLocation()
 
-    const [userData, setUserData] = useState({});
+    const [userData,  ] = useState({});
 
-    const [followed,setFollowed]=useState()//baad mai karunga its implementation 
+    const [followed,setFollowed]=useState(authUser.followings.some(id=>id.toString()===profileUser._id.toString()))//baad mai karunga its implementation 
 
     const { username } = useParams()
 
@@ -25,38 +29,45 @@ const Profile = () => {
 
     let data = {}
 
+    console.log(followed)
+
     const handleFollow = async (e) => {
         e.preventDefault();
-        const res = await fetch(`/api/user/followuser/${profileUser.username}`, {
-            method: "POST",
-        })
-        console.log(res)
+        
+        
 
-        data = await res.json()
+        try{
+            const res = await fetch(`/api/user/followuser/${profileUser.username}`, {
+                method: "POST",
+            })
+            console.log(res)
+    
+            data = await res.json()
+    
+            if(data.error) throw new Error(data.error)
+    
+            setFollowed((prev)=>!prev);
 
-        console.log(data)
+            
+
+            console.log(data)
+        
+        }catch(error){
+            console.log(error)
+            toast.error(error.message)
+        }
+       
 
     }
-
-
-    const { authUser, loading } = useAuthContext();
-
-    const { profileUser, setProfileUser } = useProfileContext();
-
-
-
-
+    
     useEffect(() => {
+        
         fetchUserProfile()
     }, [username]);
 
-
-
-
-
     // console.log(authUser)
-
-    console.log(profileUser.profilePicUrl)
+console.log("this is profileUser",profileUser)
+console.log(profileUser)
 
     const { posts } = useGetPost(username);
 
@@ -96,7 +107,7 @@ const Profile = () => {
                                     (<Link to={'/editprofile'}>
                                         <button style={{margin:20}}>Edit Profile</button>
                                         <Link to={'/addpost'}><button>Add Post</button></Link>
-                                    </Link>) : ((profileUser.followers.length > 0) && (profileUser.followers.some(id => id.toString() === authUser._id.toString())) ? <button onClick={handleFollow}>Unfollow</button> :
+                                    </Link>) : (followed ? <button onClick={handleFollow}>Unfollow</button> :
                                         <button onClick={handleFollow}>follow</button>)
 
 

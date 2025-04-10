@@ -10,7 +10,7 @@ export const useProfileContext=()=>{
 
 
 export const ProfileContextProvider=({children})=>{
-    const [profileUser,setProfileUser]=useState(JSON.parse(localStorage.getItem('user')) || null)
+    const [profileUser,setProfileUser]=useState(JSON.parse(localStorage.getItem('user'))||null) // to ensure that intitally it is null and after loading profile page 
     const [loading,setLoading]=useState(true)
 
     return <ProfileContext.Provider value={{profileUser,setProfileUser,loading,setLoading}}>{children}</ProfileContext.Provider>

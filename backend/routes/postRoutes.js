@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router();
-const {getAllPosts,addPost,deletePost,commentOnPost,deleteComment,likeDislikePost,reportPost,getUserPosts,getPostComments,addStory,getAllUserStories}=require("../controllers/postControllers")
+const {getAllPosts,addPost,deletePost,commentOnPost,deleteComment,likeDislikePost,reportPost,getUserPosts,getPostComments,addStory,getAllUserStories,getUsersWhoPostedStories,getStories}=require("../controllers/postControllers")
 const {protectedRoutes}=require("../middlewares/protectedRoutes");
 const multer=require("multer");
 const path=require("path");
@@ -43,7 +43,11 @@ router.get("/getpostcomments/:postId",protectedRoutes,getPostComments);
 
 router.post("/story/add",protectedRoutes,upload.single('storyContentUrl'),addStory)
 
-router.get("/story/getalluserstories",protectedRoutes,getAllUserStories) // all users means whom the loggedIn user follows 
+router.get("/story/getalluserstories",protectedRoutes,getAllUserStories) // all users means whom the loggedIn user follows and who posted sotries
+
+router.get("/story/getuserswhopostedstories",protectedRoutes,getUsersWhoPostedStories);
+
+router.get("/story/:username",protectedRoutes,getStories);
 
 
 module.exports=router;

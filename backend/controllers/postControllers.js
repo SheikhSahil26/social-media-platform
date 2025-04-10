@@ -1,307 +1,314 @@
-const Post=require("../models/postModel");
-const User=require("../models/userModel")
-const Comment=require("../models/commentModel")
+const Post = require("../models/postModel");
+const User = require("../models/userModel")
+const Comment = require("../models/commentModel")
 const { findByIdAndUpdate, findById } = require("../models/userModel");
-const cloudinary=require("../utils/cloudinary")
-const fs=require("fs")
-const Story=require("../models/storyModel")
-const {getAllUsers}=require("./userControllers")
+const cloudinary = require("../utils/cloudinary")
+const fs = require("fs")
+const Story = require("../models/storyModel")
+const { getAllUsers } = require("./userControllers")
 
 //this is for showing all post in the homepage of the platform
-async function getAllPosts(req,res){
+async function getAllPosts(req, res) {
 
-    try{
-//fetching post after sorting them in descending order of their created time so we get the latest post first
-        const Posts=await Post.find().populate('postedBy','username profilePicUrl').sort({createdAt:-1}); 
+    try {
+        //fetching post after sorting them in descending order of their created time so we get the latest post first
+        const Posts = await Post.find().populate('postedBy', 'username profilePicUrl').sort({ createdAt: -1 });
         //postedBy is a refrence to another object model so from that we want only the username and profilepic of user thats y populate.....
-        console.log("posts",Posts)
+        console.log("posts", Posts)
         return res.status(200).json({
-            posts:Posts,
+            posts: Posts,
         })
 
-    }catch(error){
+    } catch (error) {
         console.log(error)
         return res.status(500).json({
-            error:"error fetching posts!!!",
+            error: "error fetching posts!!!",
         })
     }
 }
 
 //to add post
-async function addPost(req,res){
-    try{
-        const {postCaption}=req.body;
+async function addPost(req, res) {
+    try {
+        const { postCaption } = req.body;
 
-        let imageUrl=""
+        let imageUrl = ""
 
-        const response = await cloudinary.uploader.upload(req.file.path,{
-            resource_type:"auto",
+        const response = await cloudinary.uploader.upload(req.file.path, {
+            resource_type: "auto",
         })
         console.log(response.url);
-        const userPosts=await Post.find({postedBy:req.user._id});
+        const userPosts = await Post.find({ postedBy: req.user._id });
 
         // console.log(req.user);
         // console.log(req.user.bio);
-    
-        const newPost=new Post({
-            postImageUrl:response.url,
+
+        const newPost = new Post({
+            postImageUrl: response.url,
             postCaption,
-            postedBy:req.user._id,
-            postlikes:[],
-            postComments:[],
+            postedBy: req.user._id,
+            postlikes: [],
+            postComments: [],
+            publicId: response.public_id,
         })
-        if(newPost){
+        if (newPost) {
             await newPost.save()
 
-            const user=await User.findById(req.user._id);
+            const user = await User.findById(req.user._id);
 
-            user.totalPosts=userPosts.length+1;
+            user.totalPosts = userPosts.length + 1;
 
             await user.save();
 
             fs.unlinkSync(req.file.path)
-    
+
             return res.status(200).json({
-                success:"posted successfully",
-                msg:"image uploaded to cloud successfully"
+                success: "posted successfully",
+                msg: "image uploaded to cloud successfully"
             })
         }
-        else{
+        else {
             return res.status(500).json({
-                failed:"failed to upload your post due to some technical error!!",
+                failed: "failed to upload your post due to some technical error!!",
             })
         }
     }
-    catch(error){
+    catch (error) {
         console.log(error)
-        
+
         return res.status(500).json({
-            error:"internal server error",
+            error: "internal server error",
         })
     }
 }
 
 //to delete post
-async function deletePost(req,res){
-    try{
-        const post = await Post.findOne({_id:req.params.id})
+async function deletePost(req, res) {
+    try {
+        const post = await Post.findOne({ _id: req.params.id })
 
         console.log(post);
         console.log(req.user._id)
 
-        const userPosts= await Post.find({postedBy:req.user._id})
+        const userPosts = await Post.find({ postedBy: req.user._id })
 
-        
 
-        if(post.postedBy.toString()!==req.user._id.toString()){
+
+        if (post.postedBy.toString() !== req.user._id.toString()) {
             return res.status(400).json({
-                error:"you are not authorized to delete this post!!",
-            })
-        } 
-        
-        const user=await User.findById(req.user._id);
-
-        if(user.totalPosts==0){
-            return res.status(400).json({
-                error:"cant delete no post",
+                error: "you are not authorized to delete this post!!",
             })
         }
 
-        await Post.deleteOne({_id:req.params.id});
+        const user = await User.findById(req.user._id);
 
-        user.totalPosts=userPosts.length-1;
+        if (user.totalPosts == 0) {
+            return res.status(400).json({
+                error: "cant delete no post",
+            })
+        }
+
+        await cloudinary.destroy(post.publicId);
+
+        await Post.deleteOne({ _id: req.params.id });
+
+
+
+        user.totalPosts = userPosts.length - 1;
 
         await user.save();
 
+
+
         return res.status(200).json({
-            success:"post deleted successfully",
+            success: "post deleted successfully",
         })
-    }catch(error){
+    } catch (error) {
         console.log(error)
         return res.status(500).json({
-            
-            error:"failed to delete post",
+
+            error: "failed to delete post",
         })
     }
 }
 
 
 //to comment on the post
-async function commentOnPost(req,res){
-    try{
-        const {commentBody}=req.body;
-        
-        const post=await Post.findById(req.params.id);
+async function commentOnPost(req, res) {
+    try {
+        const { commentBody } = req.body;
+
+        const post = await Post.findById(req.params.id);
 
         console.log(post)
 
-        const newComment=new Comment({
+        const newComment = new Comment({
             commentBody,
-            createdBy:req.user._id,
-            forPost:req.params.id,
+            createdBy: req.user._id,
+            forPost: req.params.id,
         })
 
         await newComment.save();
 
         post.postComments.push(newComment._id);
-        
+
         await post.save();
 
 
         return res.status(200).json({
-            success:"comment added successfully",
+            success: "comment added successfully",
         })
     }
-    catch(error){
+    catch (error) {
         console.log(error)
         return res.status(500).json({
-            error:"internal server error",
+            error: "internal server error",
         })
     }
 }
 
 // to delete the comment 
-async function deleteComment(req,res){
-    try{
-        const comment=await Comment.findById(req.params.id)
+async function deleteComment(req, res) {
+    try {
+        const comment = await Comment.findById(req.params.id)
 
-        let post= await Post.findById(comment.forPost);
+        let post = await Post.findById(comment.forPost);
 
         console.log(post);
 
-        if(req.user._id.toString()!==comment.createdBy.toString()){
+        if (req.user._id.toString() !== comment.createdBy.toString()) {
             return res.status(400).json({
-                error:"you are not authorized to delete this comment!!!"
+                error: "you are not authorized to delete this comment!!!"
             })
         }
 
 
-        let newArray=post.postComments.filter(id=>id.toString()!==req.params.id);
+        let newArray = post.postComments.filter(id => id.toString() !== req.params.id);
 
-        post.postComments=newArray;
+        post.postComments = newArray;
 
         await post.save();
 
-        await Comment.deleteOne({_id:req.params.id});
+        await Comment.deleteOne({ _id: req.params.id });
 
         return res.status(200).json({
-            success:"comment deleted successfully"
+            success: "comment deleted successfully"
         })
 
 
 
-    }catch(error){
+    } catch (error) {
         console.log(error)
         return res.status(500).json({
-            error:"internal server error",
+            error: "internal server error",
         })
     }
 }
 
 
 //to do like and dislike on the post 
-async function likeDislikePost(req,res){
-    try{
-    
-        const post=await Post.findById(req.params.id);
+async function likeDislikePost(req, res) {
+    try {
 
-        const userId=req.user._id;
+        const post = await Post.findById(req.params.id);
 
-        const found=post.postLikes.find(id=>id.toString()===userId.toString());
+        const userId = req.user._id;
+
+        const found = post.postLikes.find(id => id.toString() === userId.toString());
         console.log(found);//first check if the loggedIn user already liked the post of this user or not and if he does then do do unlike or else like the post as below 
-        if(!found){
+        if (!found) {
             post.postLikes.push(req.user._id);
 
-           await  post.save();
+            await post.save();
 
             return res.status(200).json({
-                liked:"liked",
-                likesNum:post.postLikes.length   //the postLikes is an array containing the user ids of the users who liked the post 
+                liked: "liked",
+                likesNum: post.postLikes.length   //the postLikes is an array containing the user ids of the users who liked the post 
             })
         }
-        
-        post.postLikes=post.postLikes.filter(id=>id.toString()!==userId.toString())
+
+        post.postLikes = post.postLikes.filter(id => id.toString() !== userId.toString())
 
         await post.save();
 
         return res.status(200).json({
-            unliked:"unliked",
-            likesNum:post.postLikes.length 
+            unliked: "unliked",
+            likesNum: post.postLikes.length
         })
     }
-    catch(error){
+    catch (error) {
         console.log(error)
         return res.status(500).json({
-            error:"internal server error",
+            error: "internal server error",
         })
     }
 }
 
 // to report a post but this controller is pending !!!!
-async function reportPost(req,res){
-    const {reportBody}=req.body;
+async function reportPost(req, res) {
+    const { reportBody } = req.body;
 
     const post = await Post.findById(req.params.id)
 
-    if(post.report.length===10){
+    if (post.report.length === 10) {
         //send the message(warning) to the post owner to 
     }
-    else if(post.report.length>10){
+    else if (post.report.length > 10) {
         //delete post 
     }
 }
 
 //to show the post of the user whose profile is opened 
-async function getUserPosts(req,res){
+async function getUserPosts(req, res) {
 
-    try{
-        const user=await User.findOne({username:req.params.username});
-    
-        const posts=await Post.find({postedBy:user._id}).sort({createdAt:-1}); //sorted on the basis of recent creation time
+    try {
+        const user = await User.findOne({ username: req.params.username });
 
-    
-    
-        if(posts){
+        const posts = await Post.find({ postedBy: user._id }).sort({ createdAt: -1 }); //sorted on the basis of recent creation time
+
+
+
+        if (posts) {
             return res.status(200).json({
-                posts:posts,
+                posts: posts,
             })
         }
 
-    }catch(error){
+    } catch (error) {
         return res.status(500).json({
-            error:"error fetching post of user"
+            error: "error fetching post of user"
         })
     }
 
 
 }
 
-async function getPostComments(req,res){
+async function getPostComments(req, res) {
 
-    const postId=req.params.postId;
+    const postId = req.params.postId;
 
-    try{
-        const comments=await Comment.find({forPost:postId}).sort({createdAt:-1});
-    
-        if(!comments){
+    try {
+        const comments = await Comment.find({ forPost: postId }).sort({ createdAt: -1 });
+
+        if (!comments) {
             return res.status(404).json({
-                error:"error fetching comments"
+                error: "error fetching comments"
             })
         }
 
         console.log(comments)
 
         return res.status(200).json({
-            noOfComments:comments.length,
-            comments:comments,
+            noOfComments: comments.length,
+            comments: comments,
         })
-        
 
 
-    }catch(error){
+
+    } catch (error) {
         console.log(error)
         return res.status(500).json({
-            error:"error fetching comments of user"
+            error: "error fetching comments of user"
         })
     }
 
@@ -310,21 +317,22 @@ async function getPostComments(req,res){
 
 //function to delete the story after the specified time 
 
-const scheduleDeletion = (storyId, expirationTime,userId) => {
+const scheduleDeletion = (storyId, expirationTime, userId, publicId) => {
     const delay = expirationTime.getTime() - Date.now();
-    
-   
+
+    console.log("reached deletion function")
+
     setTimeout(async () => {
         try {
-            const user=await User.findById(userId)
+            const user = await User.findById(userId)
 
-            user.stories=user.stories.filter((story)=>story._id.toString()!==storyId.toString())
+            user.stories = user.stories.filter((story) => story._id.toString() !== storyId.toString())
 
             await Story.findByIdAndDelete(storyId);
 
-            
+            await cloudinary.uploader.destroy(publicId);
 
-            user.save();
+            await user.save();
 
             console.log(`Story ${storyId} deleted after expiration.`);
         } catch (error) {
@@ -334,78 +342,189 @@ const scheduleDeletion = (storyId, expirationTime,userId) => {
 };
 
 
-async function addStory(req,res){
-    try{
+async function addStory(req, res) {
+    try {
         console.log(req.file.path)
         console.log(req.user)
 
-        const response=await cloudinary.uploader.upload(req.file.path,{
-            resource_type:"auto",
+        const response = await cloudinary.uploader.upload(req.file.path, {
+            resource_type: "auto",
         })
+
+        //this is the public id of the image uploaded in the cloudinary to use it for deletion 
+        const publicId = response.public_id;
+
 
         console.log(response)
 
         const expirationTime = new Date();
-        expirationTime.setSeconds(expirationTime.getSeconds() + 20);
 
-       
 
-        const newStory=new Story({
-            storyContentUrl:response.url,
-            postedBy:req.user._id,
+        expirationTime.setSeconds(expirationTime.getSeconds() + 100);
+
+        const newStory = new Story({
+            storyContentUrl: response.url,
+            postedBy: req.user._id,
         })
 
-        
 
-        if(newStory){
+
+        if (newStory) {
             await newStory.save();
 
-            const user=await User.findById(req.user._id)
+            const user = await User.findById(req.user._id)
 
             user.stories.push(newStory);
 
             await user.save();
 
-            scheduleDeletion(newStory._id,expirationTime,req.user._id);
+            scheduleDeletion(newStory._id, expirationTime, req.user._id, publicId);
 
             fs.unlinkSync(req.file.path)
 
 
-            scheduleDeletion(newStory._id, expirationTime);
 
             return res.status(200).json({
-                success:"story posted",
+                success: "story posted",
             })
 
 
 
         }
-        else{
+        else {
             return res.status(500).json({
-                error:"failed to upload story"
+                error: "failed to upload story"
             })
+        }
+
+
+
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            error: "cant post story due to internal server error",
+        })
+    }
+}
+
+// this is function is to get the stories of the users whom our logged in user follows
+//my logic: use HashMap to store the user as key and stories array as value 
+// map={
+//  user1:[story1,story2,story3,.....storyN],
+//  user2:[story1,.........storyN],
+//} is this efficient logic??????? dont know will later check for the optimizations
+
+async function getAllUserStories(req, res) {
+
+    //later i will do implementation of efficient story feature
+
+    try {
+        const user = await User.findById(req.user._id).select("followings");
+
+        const followedUserIds = user.followings.map((id) => id.toString());
+
+        //pushing the loggedIn user in the followings list so that his/her story is also included in the stories list
+        followedUserIds.push(req.user._id.toString());
+
+        const stories = await Story.find({ postedBy: { $in: followedUserIds } })
+            .populate('postedBy')
+            .sort({ createdAt: -1 });
+
+        console.log(stories);
+
+        const storyMap = new Map();
+
+        stories.forEach((story) => {
+            const username = story.postedBy.username;
+
+            if (!storyMap.has(username)) {
+                storyMap.set(username, []);
+            }
+
+            storyMap.get(username).push(story);
+        });
+
+        console.log(storyMap);
+
+        return res.status(200).json({
+            stories: Object.fromEntries(storyMap)
+        })
+    } catch (error) {
+        console.log(error)
+
+        return res.status(400).json({
+            error: "error fetching stories"
+        })
+
+    }
+}
+
+async function getUsersWhoPostedStories(req,res){
+
+    try{
+        const user = await User.findById(req.user._id).select("followings");
+
+        const followedUserIds = user.followings.map((id) => id.toString());
+
+        //pushing the loggedIn user in the followings list so that his/her story is also included in the stories list
+        followedUserIds.push(req.user._id.toString());
+
+        const stories = await Story.find({ postedBy: { $in: followedUserIds } })
+            .populate('postedBy')
+            .sort({ createdAt: -1 });
+
+            
+            console.log(stories)
+
+            const users=[]
+
+        for(let i=0;i<stories.length;i++){
+            users.push(stories[i].postedBy.username)
         }
         
+        const uniqueUsers=[...new Set(users)]
+       
+
+        return res.status(200).json({
+            users:uniqueUsers
+        })
+        
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).json({
+            error:"error fetching the users who posted stories"
+        })
+
+    }
+
+}
+
+async function getStories(req,res){
+
+    try{
+        const user=await User.findOne(req.params.username);
+
+        const stories= await Story.find({postedBy:user._id});
+
+        console.log(stories);
+
+        return res.status(200).json({
+            stories:stories,
+        })
 
 
 
     }catch(error){
-        console.log(error);
-        return res.status(500).json({
-            error:"cant post story due to internal server error",
+        return res.status(400).json({
+            error:"unable to fetch the stories of this user"
         })
     }
 }
-// this is function is to get the stories of the users whom our logged in user follows
-async function getAllUserStories(req,res){
-
-   //later i will do implementation of efficient story feature 
-
-}
 
 
-
-module.exports={
+module.exports = {
     getAllPosts,
     addPost,
     deletePost,
@@ -416,5 +535,7 @@ module.exports={
     getUserPosts,
     getPostComments,
     addStory,
-    getAllUserStories
+    getAllUserStories,
+    getUsersWhoPostedStories,
+    getStories
 }

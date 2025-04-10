@@ -1,0 +1,301 @@
+/* Stories Component CSS */
+.stories-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 16px 48px; /* Extra space for scroll buttons */
+  margin-bottom: 24px;
+  background: white;
+  border-radius: 16px;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.stories-scrollable {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px;
+  width: 100%;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.stories-scrollable::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Individual story item */
+.story-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  min-width: 72px;
+  text-decoration: none;
+}
+
+.story-avatar-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  padding: 2px;
+  position: relative;
+}
+
+.story-avatar-wrapper.new-story {
+  background: linear-gradient(45deg, #1a73e8, #4285f4);
+}
+
+.story-avatar-wrapper.no-story {
+  background: #e8f0fe;
+}
+
+.story-avatar-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #fff;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.live-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background-color: #1a73e8;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+.story-username {
+  font-size: 12px;
+  color: #444;
+  max-width: 64px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Add story button */
+.story-add-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #1a73e8;
+  background-color: #f0f2f5;
+  border-radius: 50%;
+}
+
+/* Scroll buttons */
+.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  color: #1a1a1a;
+}
+
+.scroll-left {
+  left: 8px;
+}
+
+.scroll-right {
+  right: 8px;
+}
+
+/* Story modal */
+.story-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.story-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 80vh;
+  background-color: #000;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.story-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.story-header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.story-header-details {
+  flex: 1;
+}
+
+.story-header-username {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.story-header-time {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.story-close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Progress bar */
+.story-progress-container {
+  display: flex;
+  position: absolute;
+  top: 52px;
+  left: 0;
+  right: 0;
+  padding: 4px 8px;
+  z-index: 2;
+}
+
+.story-progress-bg {
+  flex: 1;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 2px;
+  overflow: hidden;
+}
+
+.story-progress-fill {
+  width: 0;
+  height: 100%;
+  background-color: #1a73e8;
+}
+
+.story-progress-fill.completed {
+  width: 100%;
+}
+
+.story-progress-fill.active {
+  width: 0;
+  animation: progress 5s linear forwards;
+}
+
+@keyframes progress {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Story content */
+.story-content {
+  height: 100%;
+  position: relative;
+}
+
+.story-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Navigation overlay */
+.story-navigation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+}
+
+.story-nav-left, .story-nav-right {
+  flex: 1;
+  height: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .stories-container {
+    padding: 12px;
+  }
+
+  .scroll-button {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .story-modal-content {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    border-radius: 0;
+  }
+
+  .story-avatar-wrapper {
+    width: 56px;
+    height: 56px;
+  }
+
+  .story-username {
+    max-width: 56px;
+  }
+}

@@ -24,6 +24,7 @@ async function userSignUp(req,res){
             followings,
             totalPosts,
             stories, 
+            
         })
 
         if(newUser){
@@ -88,6 +89,8 @@ async function userLogin(req,res){
         // generateOTP();
 
         generateTokenAndSetCookie(findUser._id,res)
+
+        
         
         return res.status(200).json({
             success:"logged in successfully",

@@ -43,7 +43,7 @@ const userSchema=new Schema({
             type:Schema.Types.ObjectId,
             ref:"Story"
         }
-    ]
+    ],
 
 
 },{timestamps:true});

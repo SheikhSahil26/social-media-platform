@@ -64,7 +64,7 @@ async function followUnFollowUser(req,res){
             console.log(currentUser.followings);
     
             return res.status(200).json({
-                liked:"followed",
+                followed:"followed",
             })
         }
         
@@ -76,7 +76,7 @@ async function followUnFollowUser(req,res){
 
     
         return res.status(200).json({
-            error:"unfollowed", 
+            unfollowed:"unfollowed", 
         })
     }
     catch(error){

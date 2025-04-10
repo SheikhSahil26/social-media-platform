@@ -16,6 +16,8 @@ const useEditProfile = () => {
             formData.append('bio', bio);           // Add bio
             formData.append('profilePicUrl', profilePicUrl);
 
+            
+
             const res=await fetch("/api/user/editprofile",{
                 method:"POST",
                 

@@ -2,10 +2,13 @@ import React, { useState } from 'react'
 import "./editprofile.css"
 import { useNavigate } from 'react-router-dom'
 import useEditProfile from '../hooks/useEditProfile'
+import { useAuthContext } from '../context/authContext'
 
 const EditProfile = () => {
 
     const navigate=useNavigate()
+
+    const [loading,setLoading]=useState(false)
 
     const [inputs,setInputs]=useState({
         username:"",
@@ -17,7 +20,9 @@ const EditProfile = () => {
 
     const handleSubmit=async(e)=>{
         e.preventDefault()
+        setLoading(true);
         await editProfile(inputs);
+        setLoading(false);
     }
 
 
@@ -62,7 +67,7 @@ const EditProfile = () => {
 
             <div className="button-group">
                 <button type="button" className="btn-cancel">Cancel</button>
-                <button type="submit" className="btn-save">Save Changes</button>
+                <button type="submit" className="share-button"  disabled={loading}>{loading?"saving changes...":"save changes"}</button>
             </div>
         </form>
     </div>
