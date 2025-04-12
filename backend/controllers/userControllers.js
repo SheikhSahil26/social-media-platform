@@ -145,14 +145,14 @@ async function editProfile(req,res){
 // to get allusers apart from the logged in user to show as suggestions in frontend
 async function getAllUsers(req,res){
 
-    console.log(req.user)
+    // console.log(req.user)
 
     const loggedInUserId=req.user._id
 
     try{
         const allUsers=await User.find({_id:{$ne:loggedInUserId}})
 
-        console.log(allUsers);
+        // console.log(allUsers);
 
         return res.status(200).json({
             users:allUsers

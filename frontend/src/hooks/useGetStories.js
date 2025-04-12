@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 
 const useGetStories = () => {
@@ -11,6 +12,7 @@ const useGetStories = () => {
             const res=await fetch(`/api/post/story/${username}`,{
 
                 method:"GET",
+                
             })
             const data =await res.json();
 
@@ -22,11 +24,12 @@ const useGetStories = () => {
             setStories(data.stories || []);
 
 
-
+            return data.stories || [];
 
 
         }catch(error){
             toast.error(error.message)
+            return []
         }
     }
 

@@ -14,7 +14,7 @@ async function getAllPosts(req, res) {
         //fetching post after sorting them in descending order of their created time so we get the latest post first
         const Posts = await Post.find().populate('postedBy', 'username profilePicUrl').sort({ createdAt: -1 });
         //postedBy is a refrence to another object model so from that we want only the username and profilepic of user thats y populate.....
-        console.log("posts", Posts)
+        // console.log("posts", Posts)
         return res.status(200).json({
             posts: Posts,
         })
@@ -360,11 +360,13 @@ async function addStory(req, res) {
         const expirationTime = new Date();
 
 
-        expirationTime.setSeconds(expirationTime.getSeconds() + 100);
+        expirationTime.setSeconds(expirationTime.getSeconds() + 600);
 
         const newStory = new Story({
-            storyContentUrl: response.url,
-            postedBy: req.user._id,
+            storyContentUrl : response.url,
+            postedBy : req.user._id,
+            expiresAt : expirationTime,
+            publicId:publicId
         })
 
 
@@ -378,7 +380,7 @@ async function addStory(req, res) {
 
             await user.save();
 
-            scheduleDeletion(newStory._id, expirationTime, req.user._id, publicId);
+            // scheduleDeletion(newStory._id, expirationTime, req.user._id, publicId);
 
             fs.unlinkSync(req.file.path)
 
@@ -460,9 +462,9 @@ async function getAllUserStories(req, res) {
     }
 }
 
-async function getUsersWhoPostedStories(req,res){
+async function getUsersWhoPostedStories(req, res) {
 
-    try{
+    try {
         const user = await User.findById(req.user._id).select("followings");
 
         const followedUserIds = user.followings.map((id) => id.toString());
@@ -474,51 +476,64 @@ async function getUsersWhoPostedStories(req,res){
             .populate('postedBy')
             .sort({ createdAt: -1 });
 
-            
-            console.log(stories)
 
-            const users=[]
+        // console.log(stories)
 
-        for(let i=0;i<stories.length;i++){
-            users.push(stories[i].postedBy.username)
+        const users = []
+
+        for (let i = 0; i < stories.length; i++) {
+            users.push({ username: stories[i].postedBy.username, profilePicUrl: stories[i].postedBy.profilePicUrl });
         }
+
+        const uniqueUsers = [];
+        const seenUsernames = new Set();
+
+        for (const user of users) {
+            if (!seenUsernames.has(user.username)) {
+                seenUsernames.add(user.username);
+                uniqueUsers.push(user);
+            }
+        }
+
+        // console.log(uniqueUsers)
         
-        const uniqueUsers=[...new Set(users)]
-       
 
         return res.status(200).json({
-            users:uniqueUsers
+            users: uniqueUsers
         })
-        
-    }catch(error){
-        console.log(error)
+
+    } catch (error) {
+        console.log("this is error",error)
 
         return res.status(500).json({
-            error:"error fetching the users who posted stories"
+            error: "error fetching the users who posted stories"
         })
 
     }
 
 }
 
-async function getStories(req,res){
+async function getStories(req, res) {
 
-    try{
-        const user=await User.findOne(req.params.username);
+    try {
+        const user = await User.findOne({username:req.params.username});
 
-        const stories= await Story.find({postedBy:user._id});
+        const stories = await Story.find({ postedBy: user._id }).populate('postedBy');
 
-        console.log(stories);
+        console.log(typeof(stories));
+
+        console.log(stories)
 
         return res.status(200).json({
-            stories:stories,
+            stories: stories,
         })
 
 
 
-    }catch(error){
+    } catch (error) {
+        console.log(error)
         return res.status(400).json({
-            error:"unable to fetch the stories of this user"
+            error: "unable to fetch the stories of this user"
         })
     }
 }

@@ -5,6 +5,13 @@ const express=require('express');
 const mongoose=require('mongoose');
 const path=require('path');
 
+
+//cron job for story deletion
+
+require("./cron/storyCron");
+console.log("cron job activated!!!!")
+
+
 const connectToMongoDB=require("./db/connectToMongoDB");
 
 const app=express();

@@ -6,8 +6,8 @@ import toast from 'react-hot-toast';
 import useGetStories from '../hooks/useGetStories';
 
 const Stories = () => {
-  // Sample data - in a real app, you would fetch this from your API
-  const [users, setUsers] = useState({});
+  
+  const [users, setUsers] = useState([]);
 
 
   useEffect(()=>{
@@ -25,7 +25,9 @@ const Stories = () => {
         
         if(data.error) throw new Error(data.error);
 
-        setUsers(data.users);
+        setUsers(data.users || []);
+
+        
 
         console.log(typeof(users))
 
@@ -33,6 +35,7 @@ const Stories = () => {
         
 
       }catch(error){
+        console.log(error);
         toast.error(error.message)
       }
     }
@@ -45,8 +48,8 @@ const Stories = () => {
 
 
 
-  const [storyAuthor,setStoryAuthor]=useState(null)
-  const [activeStory, setActiveStory] = useState(null);
+  const [storyAuthor,setStoryAuthor]=useState("")
+  const [activeStory, setActiveStory] = useState([]);
   const [activeStoryIndex, setActiveStoryIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const storyContainerRef = useRef(null);
@@ -65,11 +68,17 @@ const Stories = () => {
   const openStory = async (username) => {
     setStoryAuthor(username);
 
-    await fetchUserStories(username)
+    console.log(username)
 
-    setActiveStory(stories);
+    const userStories=await fetchUserStories(username)
 
-    console.log(activeStory)
+    console.log(userStories);
+
+    console.log(typeof(userStories))
+
+    setActiveStory(userStories || []);
+
+    
     
     setActiveStoryIndex(0);
     
@@ -83,11 +92,13 @@ const Stories = () => {
     clearInterval(timerRef.current);
   };
 
+  
+
   // Function to navigate to the next story
   const nextStory = () => {
     if (!activeStory) return;
     
-    if (activeStoryIndex < activeStory.stories.length - 1) {
+    if (activeStoryIndex < activeStory.length - 1) {
       setActiveStoryIndex(activeStoryIndex + 1);
     } else {
       // Find the index of the current user
@@ -130,16 +141,25 @@ const Stories = () => {
       clearInterval(timerRef.current);
       
       // Mark the current story as seen
-      setStories(prevStories => {
-        return prevStories.map(user => {
-          if (user.id === activeStory.id) {
-            const updatedStories = [...user.stories];
-            updatedStories[activeStoryIndex].seen = true;
-            return { ...user, stories: updatedStories };
-          }
-          return user;
-        });
-      });
+      // setStories(prevStories => {
+      //   return prevStories.map(user => {
+      //     if (user.id === activeStory.id) {
+      //       const updatedStories = [...user.stories];
+      //       updatedStories[activeStoryIndex].seen = true;
+      //       return { ...user, stories: updatedStories };
+      //     }
+      //     return user;
+      //   });
+      // });
+
+
+
+    //my new logic
+
+
+
+
+
       
       // Set a new timer to advance to the next story after 5 seconds
       timerRef.current = setTimeout(nextStory, 5000);
@@ -171,23 +191,23 @@ const Stories = () => {
         
         {/* User Stories */}
         {Array.isArray(users) && users.length > 0 ? (
-            users.map((username) =>(
+            users.map((user) =>(
       
       <div 
-        key={username} 
+        key={user.username} 
         className="story-item"
-        onClick={() => openStory(username)}
+        onClick={() => openStory(user.username)}
       >
         <div className="story-avatar-wrapper new-story">
-          <div className="story-avatar-inner">
+          
             <img 
-              // src={story.profilePicture} 
-              // alt={story.username} 
+              src={user.profilePicUrl} 
+              alt={user.username} 
               className="story-avatar"
             />
-          </div>
+          
         </div>
-        <span className="story-username">{username}</span>
+        <span className="story-username">{user.username}</span>
       </div>
     )
   )
@@ -211,14 +231,14 @@ const Stories = () => {
             {/* Header */}
             <div className="story-header">
               <img 
-                src={activeStory.profilePicture} 
-                alt={activeStory.username} 
+                src={activeStory[0].postedBy.profilePicUrl} 
+                alt={activeStory[0].postedBy.username} 
                 className="story-header-avatar"
               />
               <div className="story-header-details">
                 <div className="story-header-username">{activeStory.username}</div>
                 <div className="story-header-time">
-                  {activeStory.stories[activeStoryIndex].time} ago
+                  {activeStory[activeStoryIndex].createdAt} ago
                 </div>
               </div>
               <button onClick={closeStory} className="story-close-btn">
@@ -228,8 +248,8 @@ const Stories = () => {
             
             {/* Progress Bars */}
             <div className="story-progress-container">
-              {activeStory.stories.map((story, index) => (
-                <div key={story.id} className="story-progress-bg">
+              {activeStory.map((story, index) => (
+                <div key={story._id} className="story-progress-bg">
                   <div 
                     className={`story-progress-fill ${index === activeStoryIndex ? 'active' : index < activeStoryIndex ? 'completed' : ''}`}
                   ></div>
@@ -240,7 +260,7 @@ const Stories = () => {
             {/* Story Content */}
             <div className="story-content">
               <img 
-                src={activeStory.stories[activeStoryIndex].imageUrl} 
+                src={activeStory[activeStoryIndex].storyContentUrl} 
                 alt="Story" 
                 className="story-image"
               />

@@ -12,9 +12,20 @@ const storySchema=new Schema({
     createdAt:{
         type:Date,
         default:Date.now(),
-        index:{expires:'30s'}//using TTL index for automatically deleting this story object after specified time!!
     },
+    expiresAt:{
+        type:Date,
+        required:true,
+        index:{expires:0}
+        
+    },
+    publicId:{
+        type:String,
+        required:true,
+    }
 },{timestamps:true})
+
+
 
 const Story=model("Story",storySchema)
 
